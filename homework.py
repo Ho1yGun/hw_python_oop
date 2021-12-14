@@ -68,7 +68,7 @@ class Running(Training):
         coeff_kcal = 18
         coeff_kcal2 = 20
         return((coeff_kcal * Training.get_mean_speed(self) - coeff_kcal2)
-            * self.weight / self.M_IN_KM * (self.duration * 60))
+               * self.weight / self.M_IN_KM * (self.duration * 60))
 
 
 class SportsWalking(Training):
