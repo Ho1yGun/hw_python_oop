@@ -5,6 +5,7 @@ from dataclasses import dataclass
 @dataclass
 class InfoMessage:
     """Информационное сообщение о тренировке."""
+
     training_type: str
     duration: float
     distance: float
@@ -87,7 +88,7 @@ class SportsWalking(Training):
         exponentiation: int = 2
         return((kcal_coef1 * self.weight
                + (Training.get_mean_speed(self)
-               ** exponentiation // self.height)
+                ** exponentiation // self.height)
                * kcal_coef2 * self.weight)
                * (self.duration * self.minutes_per_hour))
 
@@ -122,9 +123,9 @@ class Swimming(Training):
 def read_package(workout_type: str, data: List[Union[int, float]]) -> Training:
     """Прочитать данные полученные от датчиков."""
     training_type: Dict[str, Type[Swimming, Running, SportsWalking]] = {
-                    'SWM': Swimming,
-                    'RUN': Running,
-                    'WLK': SportsWalking}
+        'SWM': Swimming,
+        'RUN': Running,
+        'WLK': SportsWalking}
     if workout_type in training_type.keys():
         return training_type[workout_type](*data)
     raise ValueError('Неизвестный вид тренировки')
