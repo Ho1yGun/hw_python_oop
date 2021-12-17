@@ -11,18 +11,6 @@ class InfoMessage:
     speed: float
     calories: float
 
-    #def __init__(self,
-    #             training_type,
-    #             duration,
-    #             distance,
-    #             speed,
-    #             calories) -> None:
-    #    self.training_type = training_type
-    #    self.duration = duration
-    #    self.distance = distance
-    #    self.speed = speed
-    #    self.calories = calories
-
     def get_message(self) -> str:
         """Возвращает строку сообщения о тренировке."""
         return (f'Тип тренировки: {self.training_type};'
