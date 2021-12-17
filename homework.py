@@ -1,5 +1,5 @@
-from typing import Union, List, Dict, Type
 from dataclasses import dataclass
+from typing import List, Dict, Type
 
 
 @dataclass
@@ -46,7 +46,7 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        raise NotImplementedError('Воспользуйтесь методом в дочерних классах')
+        raise NotImplementedError
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
@@ -61,17 +61,23 @@ class Training:
 class Running(Training):
     """Тренировка: бег."""
 
+    coeff_kcal: int = 18
+    coeff_kcal2: int = 20
+
     def get_spent_calories(self) -> float:
         """Возвращает число потраченных калорий."""
-        coeff_kcal: int = 18
-        coeff_kcal2: int = 20
-        return((coeff_kcal * Training.get_mean_speed(self) - coeff_kcal2)
+        return((self.coeff_kcal * Training.get_mean_speed(self)
+               - self.coeff_kcal2)
                * self.weight / self.M_IN_KM
                * (self.duration * self.minutes_per_hour))
 
 
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
+
+    kcal_coef1: float = 0.035
+    kcal_coef2: float = 0.029
+    exponentiation: int = 2
 
     def __init__(self,
                  action: int,
@@ -83,13 +89,10 @@ class SportsWalking(Training):
 
     def get_spent_calories(self) -> float:
         """Возвращает число потраченных калорий."""
-        kcal_coef1: float = 0.035
-        kcal_coef2: float = 0.029
-        exponentiation: int = 2
-        return((kcal_coef1 * self.weight
+        return((self.kcal_coef1 * self.weight
                + (Training.get_mean_speed(self)
-                ** exponentiation // self.height)
-               * kcal_coef2 * self.weight)
+                ** self.exponentiation // self.height)
+               * self.kcal_coef2 * self.weight)
                * (self.duration * self.minutes_per_hour))
 
 
@@ -97,6 +100,8 @@ class Swimming(Training):
     """Тренировка: плавание."""
 
     LEN_STEP: float = 1.38
+    kcal_koef1: float = 1.1
+    kcal_koef2: int = 2
 
     def __init__(self,
                  action: int,
@@ -115,18 +120,17 @@ class Swimming(Training):
 
     def get_spent_calories(self) -> float:
         """Возвращает число потраченных калорий."""
-        kcal_koef1: float = 1.1
-        kcal_koef2: int = 2
-        return (self.get_mean_speed() + kcal_koef1) * kcal_koef2 * self.weight
+        return ((self.get_mean_speed() + self.kcal_koef1)
+                * self.kcal_koef2 * self.weight)
 
 
-def read_package(workout_type: str, data: List[Union[int, float]]) -> Training:
+def read_package(workout_type: str, data: List[int]) -> Training:
     """Прочитать данные полученные от датчиков."""
-    training_type: Dict[str, Type[Swimming, Running, SportsWalking]] = {
+    training_type: Dict[str, Type[Training]] = {
         'SWM': Swimming,
         'RUN': Running,
         'WLK': SportsWalking}
-    if workout_type in training_type.keys():
+    if workout_type in training_type:
         return training_type[workout_type](*data)
     raise ValueError('Неизвестный вид тренировки')
 
